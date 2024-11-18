@@ -1,3 +1,10 @@
+# Docker volumes
+.db-data/
+.pgadmin-data/
+
+# Geofabric OSM data files
+*.osm.pbf
+
 # Created by https://www.toptal.com/developers/gitignore/api/python
 # Edit at https://www.toptal.com/developers/gitignore?templates=python
 
