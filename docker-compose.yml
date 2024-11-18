@@ -1,0 +1,29 @@
+services:
+
+  pgrouting:
+    build:
+      context: pgrouting/
+    ports:
+      - "5432:5432"
+    volumes:
+      - .db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PORT=5432
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    ports:
+      - "15432:80"
+    volumes:
+      - .pgadmin-data:/var/lib/pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@pgadmin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    depends_on:
+      - pgrouting
+
+volumes:
+  db-data:
+  pgadmin-data:
