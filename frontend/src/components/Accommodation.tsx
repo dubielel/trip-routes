@@ -9,24 +9,14 @@ import { RootState } from '../store/reduxStore';
 import { SelectPlaceModal } from './SelectPlaceModal';
 import { setAccommodation } from '../store/reducers/tripSlice';
 
-export const ACCOMMODATION_MARKER_COLOR = '#48e5ef';
-const AccommodationMarkerColor = () => (
-  <span
-    style={{
-      width: 24,
-      height: 24,
-      borderRadius: 4,
-      backgroundColor: ACCOMMODATION_MARKER_COLOR,
-      boxShadow: '0 4px 6px rgba(50, 50, 93, 0.11),0 1px 3px rgba(0, 0, 0, 0.08)',
-    }}
-  />
-);
+import { MarkerColorBox } from './MarkerColorBox';
+import { ACCOMMODATION_MARKER_COLOR, ACCOMMODATION_ROW_ID } from '../constants';
+
+const AccommodationMarkerColor = () => <MarkerColorBox color={ACCOMMODATION_MARKER_COLOR} />;
 
 export const Accommodation = () => {
-  const {
-    accommodation,
-    routeCalculations: { isCalculating: isRouteCalculating },
-  } = useSelector((state: RootState) => state.trip);
+  const { accommodation } = useSelector((state: RootState) => state.trip);
+  const { isCalculating } = useSelector((state: RootState) => state.route);
   const dispatch = useDispatch();
 
   const [isMapOpen, setIsMapOpen] = useState<boolean>(false);
@@ -57,14 +47,14 @@ export const Accommodation = () => {
                   onClick={() => {
                     dispatch(setAccommodation({ accommodation: null }));
                   }}
-                  disabled={isRouteCalculating}
+                  disabled={isCalculating}
                 >
                   <ClearIcon />
                 </IconButton>
               ),
             },
           }}
-          disabled={isRouteCalculating}
+          disabled={isCalculating}
         />
       </Stack>
     );
@@ -101,6 +91,11 @@ export const Accommodation = () => {
                 geometry: evt.result.geometry,
                 properties: {
                   displayName: evt.result.properties.display_name,
+                  markerColor: ACCOMMODATION_MARKER_COLOR,
+
+                  isNew: false,
+                  rowId: ACCOMMODATION_ROW_ID,
+                  timeToSpend: 0,
                 },
               },
             }),

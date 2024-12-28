@@ -10,16 +10,11 @@ export type PlaceToVisitProperties = {
   rowId: string;
   isNew: boolean;
 };
-type AccommodationProperties = Pick<PlaceToVisitProperties, 'displayName'>;
-
-type RouteCalculations = {
-  isCalculating: boolean;
-};
 
 type TripState = {
   firstDayTimestamp: number | null;
   lastDayTimestamp: number | null;
-  accommodation: GeoJSON.Feature<GeoJSON.Point, AccommodationProperties> | null;
+  accommodation: GeoJSON.Feature<GeoJSON.Point, PlaceToVisitProperties> | null;
   dayStartTimestamp: number | null;
   dayEndTimestamp: number | null;
   placesToVisit: GeoJSON.FeatureCollection<GeoJSON.Point, PlaceToVisitProperties>;
@@ -36,9 +31,6 @@ const initialState: TripState = {
     type: 'FeatureCollection',
     features: [],
   },
-  routeCalculations: {
-    isCalculating: false,
-  },
 };
 
 export const tripSlice = createSlice({
@@ -53,7 +45,7 @@ export const tripSlice = createSlice({
     },
     setAccommodation: (
       state,
-      action: { payload: { accommodation: GeoJSON.Feature<GeoJSON.Point, AccommodationProperties> | null } },
+      action: { payload: { accommodation: GeoJSON.Feature<GeoJSON.Point, PlaceToVisitProperties> | null } },
     ) => {
       state.accommodation = action.payload.accommodation;
     },
@@ -117,9 +109,6 @@ export const tripSlice = createSlice({
         ...currentPlacesToVisit.slice(placeToRemoveIndex + 1),
       ];
     },
-    setIsRouteCalculating: (state, action: { payload: { isCalculating: boolean } }) => {
-      state.routeCalculations.isCalculating = action.payload.isCalculating;
-    },
   },
 });
 
@@ -133,6 +122,5 @@ export const {
   updatePlaceToVisit,
   removePlaceToVisit,
   removePlaceToVisitByRowId,
-  setIsRouteCalculating,
 } = tripSlice.actions;
 export const { reducer: tripReducer } = tripSlice;

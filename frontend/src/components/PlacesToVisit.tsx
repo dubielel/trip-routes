@@ -35,10 +35,8 @@ const NoPlacesToVisitOverlay = () => (
 );
 
 export const PlacesToVisit = () => {
-  const {
-    placesToVisit: { features: placesToVisit },
-    routeCalculations: { isCalculating: isRouteCalculating },
-  } = useSelector((state: RootState) => state.trip);
+  const { placesToVisit } = useSelector((state: RootState) => state.trip);
+  const { isCalculating } = useSelector((state: RootState) => state.route);
   const dispatch = useDispatch();
 
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
@@ -212,7 +210,7 @@ export const PlacesToVisit = () => {
           onCellDoubleClick={(_params, event) => {
             event.defaultMuiPrevented = true;
           }}
-          rows={placesToVisit}
+          rows={placesToVisit.features}
           getRowId={(row) => row.properties.rowId}
           getRowHeight={() => 'auto'}
           columns={columns}
@@ -238,7 +236,7 @@ export const PlacesToVisit = () => {
               setRowModesModel,
             },
           }}
-          loading={isRouteCalculating}
+          loading={isCalculating}
           autosizeOptions={{
             includeOutliers: true,
             includeHeaders: true,

@@ -18,9 +18,7 @@ declare module '@mui/x-data-grid' {
 export const EditToolbar = (props: GridSlotProps['toolbar']) => {
   const { addNewRow, setRowModesModel } = props;
 
-  const {
-    routeCalculations: { isCalculating: isRouteCalculating },
-  } = useSelector((state: RootState) => state.trip);
+  const { isCalculating } = useSelector((state: RootState) => state.route);
 
   const handleClick = () => {
     const rowId = chance.guid();
@@ -52,7 +50,7 @@ export const EditToolbar = (props: GridSlotProps['toolbar']) => {
         color="primary"
         startIcon={<AddIcon />}
         onClick={handleClick}
-        disabled={isRouteCalculating}
+        disabled={isCalculating}
       >
         Add place to visit
       </Button>

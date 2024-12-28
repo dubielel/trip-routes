@@ -8,11 +8,8 @@ import { RootState } from '../store/reduxStore';
 import { setDayStartTimestamp, setDayEndTimestamp } from '../store/reducers/tripSlice';
 
 export const TravelTime = () => {
-  const {
-    dayStartTimestamp,
-    dayEndTimestamp,
-    routeCalculations: { isCalculating: isRouteCalculating },
-  } = useSelector((state: RootState) => state.trip);
+  const { dayStartTimestamp, dayEndTimestamp } = useSelector((state: RootState) => state.trip);
+  const { isCalculating } = useSelector((state: RootState) => state.route);
   const dispatch = useDispatch();
 
   return (
@@ -34,7 +31,7 @@ export const TravelTime = () => {
             field: { clearable: true },
             textField: { fullWidth: true },
           }}
-          disabled={isRouteCalculating}
+          disabled={isCalculating}
         />
         <TimePicker
           label="At what time do you want to be back each day?"
@@ -45,7 +42,7 @@ export const TravelTime = () => {
             field: { clearable: true },
             textField: { fullWidth: true },
           }}
-          disabled={isRouteCalculating}
+          disabled={isCalculating}
         />
       </Stack>
     </Stack>

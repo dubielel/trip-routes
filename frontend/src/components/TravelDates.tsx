@@ -8,11 +8,8 @@ import { RootState } from '../store/reduxStore';
 import { setFirstDayTimestamp, setLastDayTimestamp } from '../store/reducers/tripSlice';
 
 export const TravelDates = () => {
-  const {
-    firstDayTimestamp,
-    lastDayTimestamp,
-    routeCalculations: { isCalculating: isRouteCalculating },
-  } = useSelector((state: RootState) => state.trip);
+  const { firstDayTimestamp, lastDayTimestamp } = useSelector((state: RootState) => state.trip);
+  const { isCalculating } = useSelector((state: RootState) => state.route);
   const dispatch = useDispatch();
 
   return (
@@ -33,7 +30,7 @@ export const TravelDates = () => {
             field: { clearable: true },
             textField: { fullWidth: true },
           }}
-          disabled={isRouteCalculating}
+          disabled={isCalculating}
         />
         <DatePicker
           label="What day should be the last day of your trip?"
@@ -43,7 +40,7 @@ export const TravelDates = () => {
             field: { clearable: true },
             textField: { fullWidth: true },
           }}
-          disabled={isRouteCalculating}
+          disabled={isCalculating}
         />
       </Stack>
     </Stack>

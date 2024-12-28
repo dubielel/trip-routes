@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 
 import { Map as MaplibreMap, Marker, type MapRef } from 'react-map-gl/maplibre';
 
@@ -6,7 +6,6 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../store/reduxStore';
 
 import { chance } from '../utils/chance';
-import { ACCOMMODATION_MARKER_COLOR } from './Accommodation';
 
 type BoundingBox = [number, number, number, number];
 
@@ -16,13 +15,19 @@ const initialViewState = {
   zoom: 5,
 } as const;
 
-export const Map = () => {
+type MapProps = {
+  mapId: string;
+  children?: ReactNode;
+};
+
+export const Map = ({ mapId, children }: MapProps) => {
   const {
     accommodation,
     placesToVisit: { features: placesToVisit },
   } = useSelector((state: RootState) => state.trip);
 
   const mapRef = useRef<MapRef | null>(null);
+  const [isMapRefInitialized, setIsMapRefInitialized] = useState(false);
 
   useEffect(() => {
     const placesToDisplay = [accommodation, ...placesToVisit].reduce(
@@ -61,20 +66,24 @@ export const Map = () => {
     }
 
     mapRef.current?.fitBounds(bounds, { maxZoom: 15, padding: 50, duration: 1500 });
-  }, [accommodation, placesToVisit]);
+  }, [accommodation, isMapRefInitialized, placesToVisit]);
 
   return (
     <MaplibreMap
-      ref={mapRef}
-      id="main-map"
+      ref={(node) => {
+        mapRef.current = node;
+        setIsMapRefInitialized(Boolean(node));
+      }}
+      id={mapId}
       initialViewState={initialViewState}
       mapStyle="https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json"
     >
+      {children}
       {accommodation && (
         <Marker
           longitude={accommodation.geometry.coordinates[0]}
           latitude={accommodation.geometry.coordinates[1]}
-          color={ACCOMMODATION_MARKER_COLOR}
+          color={accommodation.properties.markerColor}
         />
       )}
       {placesToVisit.map((placeToVisit) => {
