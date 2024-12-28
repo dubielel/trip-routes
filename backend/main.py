@@ -71,7 +71,7 @@ def calculate_trip(
             request = trip_params.model_dump()
             request["query/move"] = query_move.value
             request["query/algorithm"] = query_algorithm.value
-            dump_geojson(request, fp)
+            dump_geojson(request, fp, indent=2)
 
     move_class = AvailableMoves.get_move(query_move)
     algorithm_class = AvailableAlgorithms.get_algorithm(query_algorithm)
@@ -97,7 +97,7 @@ def calculate_trip(
             response = trip_response.model_dump()
             response["query/move"] = query_move.value
             response["query/algorithm"] = query_algorithm.value
-            dump_geojson(response, fp)
+            dump_geojson(response, fp, indent=2)
 
     return trip_response
 

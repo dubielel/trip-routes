@@ -2,7 +2,11 @@ import logging
 
 import psycopg2 as pg
 from geojson_pydantic import Point, FeatureCollection, Feature, LineString
-import geojson
+from geojson import (
+    loads as geojson_loads,
+    dump as geojson_dump,
+    LineString as GeojsonLineString,
+)
 
 import numpy as np
 import numpy.typing as npt
@@ -143,14 +147,16 @@ class PgRouting:
 
         path_geojson_str: str | None = self.cursor.fetchone()[0]
 
-        if logger.getEffectiveLevel() == logging.DEBUG:
-            with open(f"path-{start_vertex.id}-{end_vertex.id}.json", "w") as fp:
-                fp.write(path_geojson_str)
-
         if path_geojson_str is None:
             return None
 
-        path_geojson: geojson.LineString = geojson.loads(path_geojson_str)
+        path_geojson: GeojsonLineString = geojson_loads(path_geojson_str)
+
+        if logger.isEnabledFor(logging.DEBUG):
+            with open(
+                f"./logs/path-{start_vertex.id}->{end_vertex.id}.json", "w"
+            ) as fp:
+                geojson_dump(path_geojson, fp, indent=2)
 
         # Path is reversed for some weird reason
         # (due to the way the ST_LineMerge function works with lines in different directions)
