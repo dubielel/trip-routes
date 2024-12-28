@@ -11,6 +11,7 @@ from geojson import (
 import numpy as np
 import numpy.typing as npt
 from math import isclose
+from datetime import datetime
 
 from models.WayVertex import WayVertex
 from models.PathPart import PathPart
@@ -154,7 +155,8 @@ class PgRouting:
 
         if logger.isEnabledFor(logging.DEBUG):
             with open(
-                f"./logs/path-{start_vertex.id}->{end_vertex.id}.json", "w"
+                f"./logs/paths/{datetime.now().strftime('%Y-%m-%d_%H:%M:%S')}-path-{start_vertex.id}->{end_vertex.id}.json",
+                "w",
             ) as fp:
                 geojson_dump(path_geojson, fp, indent=2)
 

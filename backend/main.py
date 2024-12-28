@@ -22,6 +22,7 @@ from algorithms.AlgorithmStatistics import AlgorithmStatistics
 
 environment = os.environ.get("ENV", "prod")
 os.makedirs("./logs/api", exist_ok=True)
+os.makedirs("./logs/paths", exist_ok=True)
 
 
 logging.basicConfig(
