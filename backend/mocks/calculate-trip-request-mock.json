@@ -1,0 +1,137 @@
+{
+  "firstDayTimestamp": 1734303600000,
+  "lastDayTimestamp": 1734649200000,
+  "accommodation": {
+    "type": "Feature",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [9.39258865, 45.8486094]
+    },
+    "properties": {
+      "displayName": "NH Hotel Pontevecchio, 84, Via Azzone Visconti, Pescarenico, Lecco, Lombardia, 23900, Włochy",
+      "timeToSpend": 0,
+      "markerColor": "#48e5ef",
+      "rowId": "00000000-0000-0000-0000-000000000000",
+      "isNew": false
+    }
+  },
+  "dayStartTimestamp": 1734336000000,
+  "dayEndTimestamp": 1734375600000,
+  "placesToVisit": {
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "properties": {
+          "displayName": "Arco della Pace, Piazza Sempione, Parco Sempione, Municipio 1, Mediolan, Lombardia, 20154, Włochy",
+          "timeToSpend": 180,
+          "markerColor": "#c14747",
+          "rowId": "def644dc-e943-5441-8fb7-c2bc568241ea",
+          "isNew": false
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [9.17242405, 45.47568855]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "displayName": "Porta San Giacomo, Via Sant'Alessandro, Città Alta, Bergamo, Lombardia, 24112, Włochy",
+          "timeToSpend": 120,
+          "markerColor": "#3fb282",
+          "rowId": "883989fc-19e0-5035-a5df-4392806f9e10",
+          "isNew": false
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [9.66302095, 45.70123995]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "displayName": "Gardaland Park, 4, Via Derna, Staffalo, Castelnuovo del Garda, Werona, Wenecja Euganejska, 37014, Włochy",
+          "timeToSpend": 300,
+          "markerColor": "#7386e9",
+          "rowId": "0a4bde5d-ffc1-56be-803b-ef33159c4f3d",
+          "isNew": false
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [10.71289435, 45.45604545]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "displayName": "Ferrari spa, Viale Enzo Ferrari, Bell'Italia, Maranello, Unione dei comuni del Distretto Ceramico, Modena, Emilia-Romania, 41053, Włochy",
+          "timeToSpend": 180,
+          "markerColor": "#e8a1a1",
+          "rowId": "0c12b806-8693-5fea-a135-6693a72f0119",
+          "isNew": false
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [10.8681762, 44.53265185]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "displayName": "Piazza delle Erbe, Fiera-Catena, Mantua, Lombardia, 46100, Włochy",
+          "timeToSpend": 120,
+          "markerColor": "#d72ad0",
+          "rowId": "9fb77e54-0e6a-53f2-b844-02ae8b143f14",
+          "isNew": false
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [10.79470375, 45.15844065]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "displayName": "Teatro Carcano, 63, Corso di Porta Romana, Crocetta, Municipio 1, Mediolan, Lombardia, 20121, Włochy",
+          "timeToSpend": 180,
+          "markerColor": "#bda371",
+          "rowId": "d6c27ef1-96ca-5232-a5d2-fe1d00f0ebd5",
+          "isNew": false
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [9.1955297, 45.4566842]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "displayName": "Castello degli Angeli, Auronzo di Cadore, Belluno, Wenecja Euganejska, 32041, Włochy",
+          "timeToSpend": 120,
+          "markerColor": "#edb2b2",
+          "rowId": "513af093-1cd2-5a5b-adec-120d4cd58bf4",
+          "isNew": false
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [12.2775328, 46.5752058]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "displayName": "Hotel Fonte Boiola, 11, Via Guglielmo Marconi, Sirmione, Brescia, Lombardia, 25019, Włochy",
+          "timeToSpend": 60,
+          "markerColor": "#60d58f",
+          "rowId": "b6d2c4e0-72a7-55e0-a6d1-c9f7e195a4b9",
+          "isNew": false
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [10.6088997, 45.490520599999996]
+        }
+      }
+    ]
+  }
+}

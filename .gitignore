@@ -1,3 +1,6 @@
+# Backend logs
+backend/logs/
+
 # Docker volumes
 .db-data/
 .pgadmin-data/
