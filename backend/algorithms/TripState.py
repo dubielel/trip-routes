@@ -16,7 +16,7 @@ from geojson_pydantic import (
 from pgrouting.PgRouting import PgRouting
 from models.PathPart import PathPart
 
-from utils.generateHexColor import generate_hex_color
+from utils.hex_color import get_hex_colors
 
 logger = logging.getLogger(__name__)
 
@@ -198,7 +198,7 @@ class TripState:
                 type="MultiLineString",
                 coordinates=[line_string.coordinates for line_string in line_strings],
             ),
-            properties={"colors": [generate_hex_color() for _ in line_strings]},
+            properties={"colors": get_hex_colors(n=len(line_strings))},
         )
 
     def _divide_route_into_days(self) -> list[list[int]]:
