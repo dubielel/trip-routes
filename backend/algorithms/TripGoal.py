@@ -18,6 +18,13 @@ class TripGoal:
         self.time_matrix = time_matrix
         self.max_seconds_per_day = max_seconds_per_day
 
+    @staticmethod
+    def goal_type() -> GoalType:
+        """
+        Goal type for this objective is to minimize the time
+        """
+        return GoalType.MINIMIZE
+
     def evaluate(self, state: TripState) -> float:
         """
         Evaluate the state for the objective
@@ -31,7 +38,32 @@ class TripGoal:
             )
         )
 
-        # Check if time needed for each day does not exceed the day limit
+        if not self.is_state_valid(state):
+            return float("inf")
+
+        # Calculate total trip time
+        trip_time = 0.0
+        for start_place_index, end_place_index in zip(
+            state.route[:-1], state.route[1:]
+        ):
+            trip_time += self.time_matrix[start_place_index][end_place_index]
+
+        logger.debug(
+            (
+                "Evaluating objective for:"
+                f"  - State: {state}"
+                f"  - Route: {state.route}"
+                f"  - Trip time: {trip_time}"
+            )
+        )
+
+        return trip_time
+
+    def is_state_valid(self, state: TripState) -> bool:
+        """
+        Check if time needed for each day does not exceed the day limit
+        """
+
         current_accommodation_index = 0
         while current_accommodation_index < len(state.route) - 1:
             next_accommodation_index = state.route.index(
@@ -55,31 +87,15 @@ class TripGoal:
             )
 
             if day_time > self.max_seconds_per_day:
-                return float("inf")
+                logger.warning(
+                    (
+                        "Evaluating objective - exceeded maximal day time:"
+                        f"  - Route: {state.route}"
+                        f"  - Day trip: {day_trip}"
+                    )
+                )
+                return False
 
             current_accommodation_index = next_accommodation_index
 
-        # Calculate total trip time
-        trip_time = 0.0
-        for start_place_index, end_place_index in zip(
-            state.route[:-1], state.route[1:]
-        ):
-            trip_time += self.time_matrix[start_place_index][end_place_index]
-
-        logger.debug(
-            (
-                "Evaluating objective for:"
-                f"  - State: {state}"
-                f"  - Route: {state.route}"
-                f"  - Trip time: {trip_time}"
-            )
-        )
-
-        return trip_time
-
-    @staticmethod
-    def goal_type() -> GoalType:
-        """
-        Goal type for this objective is to minimize the time
-        """
-        return GoalType.MINIMIZE
+        return True
