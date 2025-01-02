@@ -17,7 +17,6 @@ class HillClimbing(Algorithm, ABC):
     ):
         super().__init__(problem, algorithm_statistics)
 
-    # TODO override
     def next_state(self) -> TripState | None:
         """
         Move to the next state based on the current state
@@ -27,16 +26,17 @@ class HillClimbing(Algorithm, ABC):
             ("next_state()" f"  - Current state route: {self.current_state.route}")
         )
 
-        # TODO stuck in local optimum
-        # if stuck in local optimum: do sth
-        # else:
-        next_state = self._find_next_state()
+        next_state: TripState | None = None
+        if self._is_stuck_in_local_optimum():
+            next_state = self.escape_local_optimum()
+        else:
+            next_state = self._find_next_state()
 
         if next_state is not None:
             logger.debug(("next_state()" f"  - Next state route: {next_state.route}"))
             self._update_state(next_state)
-        # else:
-        # on solution
+        else:
+            self.statistics.on_solution(self.best_state, self.best_objective_value)
 
         return next_state
 
@@ -50,9 +50,13 @@ class HillClimbing(Algorithm, ABC):
         states: list[TripState] = []
         for index1 in range(1, len(self.current_state.route) - 2):
             for index2 in range(index1 + 1, len(self.current_state.route) - 1):
-                states.append(
-                    self.problem.move_method(self.current_state, index1, index2).apply()
+                neighbour = self.problem.move_method(
+                    self.current_state, index1, index2
+                ).apply()
+                self.statistics.on_next_neighbour(
+                    neighbour, self.problem.evaluate(neighbour)
                 )
+                states.append(neighbour)
 
         logger.debug(("_get_available_states()" f"  - Available states: {states}"))
 
@@ -67,6 +71,8 @@ class HillClimbing(Algorithm, ABC):
             )
         )
 
+        self.statistics.on_next_state(new_state, self.problem.evaluate(new_state))
+
         if self.problem.compare_states(self.current_state, new_state) > 0:
             self.current_state = new_state
             self.steps_from_last_step_update = 0
@@ -77,3 +83,9 @@ class HillClimbing(Algorithm, ABC):
         if self.problem.compare_states(self.best_state, new_state) > 0:
             self.best_objective_value = self.problem.evaluate(new_state)
             self.best_state = new_state
+
+    def _escape_local_optimum(self) -> TripState:
+        return self._random_restart()
+
+    def _random_restart(self) -> TripState:
+        return self.problem.random_valid_state()

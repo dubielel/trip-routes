@@ -13,6 +13,8 @@ geojson = "*"
 numpy = "*"
 fastapi = {extras = ["standard"], version = "*"}
 geojson-pydantic = "*"
+sortedcontainers = "*"
+plotly = "*"
 
 [dev-packages]
 

@@ -1,4 +1,3 @@
-from copy import deepcopy
 import logging
 
 from algorithms.moves.Move import Move
@@ -18,7 +17,7 @@ class SwapTwoPoints(Move):
             )
 
     def apply(self) -> TripState:
-        new_route = deepcopy(self.state.route)
+        new_route = list(self.state.route)
 
         logger.debug(
             f"Swapping {new_route[self.index1]} at index {self.index1} and {new_route[self.index2]} at index {self.index2} in {new_route}"

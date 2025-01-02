@@ -23,6 +23,7 @@ from algorithms.AlgorithmStatistics import AlgorithmStatistics
 environment = os.environ.get("ENV", "prod")
 os.makedirs("./logs/api", exist_ok=True)
 os.makedirs("./logs/paths", exist_ok=True)
+os.makedirs("./logs/solutions", exist_ok=True)
 
 
 logging.basicConfig(
@@ -78,11 +79,23 @@ def calculate_trip(
     algorithm_class = AvailableAlgorithms.get_algorithm(query_algorithm)
 
     problem = TripProblem(trip_params, move_class)
-    algorithm_statistics = AlgorithmStatistics()
+    algorithm_statistics = AlgorithmStatistics(query_algorithm.value, query_move.value)
     algorithm = algorithm_class(problem, algorithm_statistics)
     solver = Solver(problem, algorithm)
 
+    print(
+        f"      INFO   [{datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]}] Solving the problem using {query_algorithm.value} with {query_move.value}"
+    )
     solution_state = solver.solve()
+    print(
+        f"      INFO   [{datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]}] Solved the problem"
+    )
+
+    with open(
+        f"./logs/solutions/{current_time.strftime('%Y-%m-%d_%H:%M:%S')}-statistics.json",
+        "w",
+    ) as fp:
+        dump_geojson(algorithm_statistics.to_dict(), fp, indent=2)
 
     processed_solution = problem.process_solution(solution_state)
     trip_response = CalculateTripResponse(

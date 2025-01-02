@@ -8,7 +8,9 @@ import numpy as np
 from algorithms.TripGoal import TripGoal
 from algorithms.TripState import TripState
 from algorithms.moves.Move import Move
+
 from models.api.CalculateTripRequestBody import CalculateTripRequestBody
+
 from pgrouting.PgRouting import PgRouting
 
 logger = logging.getLogger(__name__)
@@ -41,7 +43,7 @@ class TripProblem:
         self.goal_evaluator = TripGoal(self.time_matrix, self.max_seconds_per_day)
         self.move_method = move_method
 
-        self.initial_state = self._initial_state()
+        self.initial_state = self.random_valid_state()  # self._initial_state()
 
         logger.info(
             f"Initialized TripProblem with {self.move_method.__name__} move method"
@@ -93,6 +95,19 @@ class TripProblem:
             ),
             "geometry": state.path_multiline_string_by_days(),
         }
+
+    def random_state(self) -> TripState:
+        return TripState.random_state(self.all_places, self.number_of_nights)
+
+    def random_valid_state(self) -> TripState:
+        random_state = TripState.random_state(self.all_places, self.number_of_nights)
+
+        while not self.goal_evaluator.is_state_valid(random_state):
+            random_state = TripState.random_state(
+                self.all_places, self.number_of_nights
+            )
+
+        return random_state
 
     def _initial_state(self) -> TripState:
         return TripState.initial_state(self.all_places, self.number_of_nights)

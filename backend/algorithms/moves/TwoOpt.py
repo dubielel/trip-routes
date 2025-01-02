@@ -1,5 +1,4 @@
 import logging
-from copy import deepcopy
 
 from algorithms.moves.Move import Move
 from algorithms.TripState import TripState
@@ -18,7 +17,7 @@ class TwoOpt(Move):
             )
 
     def apply(self) -> TripState:
-        new_route = deepcopy(self.state.route)
+        new_route = list(self.state.route)
 
         logger.debug(
             f"TwoOpt move: {new_route[self.index1]} at index {self.index1} and {new_route[self.index2]} at index {self.index2} in {new_route}"

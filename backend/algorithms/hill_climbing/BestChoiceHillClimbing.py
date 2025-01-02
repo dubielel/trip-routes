@@ -33,4 +33,4 @@ class BestChoiceHillClimbing(HillClimbing):
 
             return best_neighbour
 
-        return None
+        return self.current_state

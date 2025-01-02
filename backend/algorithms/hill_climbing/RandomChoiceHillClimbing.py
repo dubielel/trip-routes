@@ -19,8 +19,6 @@ class RandomChoiceHillClimbing(HillClimbing):
 
         neighbours = self._get_available_states()
 
-        # TODO what about plateau? Don't we want to move around the plateau hoping to find a better solution? Probably we would want to
-
         # There is no better neighbour
         if all(
             [
@@ -28,7 +26,7 @@ class RandomChoiceHillClimbing(HillClimbing):
                 for neighbour in neighbours
             ]
         ):
-            return None
+            return self.current_state
 
         random_neighbour = random_chcoice(neighbours)
         while self.problem.compare_states(self.current_state, random_neighbour) <= 0:

@@ -4,6 +4,7 @@ import numpy as np
 import numpy.typing as npt
 from datetime import datetime, timedelta
 from copy import deepcopy
+from random import shuffle
 
 from geojson_pydantic import (
     Feature,
@@ -22,23 +23,19 @@ logger = logging.getLogger(__name__)
 
 
 class TripState:
-    all_places: FeatureCollection[Feature[Point, dict]]
-    """
-    All places to visit including accommodation at the beginning of the list
-    """
-
-    route: list[int]
-    """
-    List of indices of places in the order of visit in this state
-    """
-
     def __init__(
         self,
         all_places: FeatureCollection[Feature[Point, dict]],
         route: list[int],
     ):
         self.all_places = all_places
-        self.route = route
+        """
+        All places to visit including accommodation at the beginning of the list
+        """
+        self.route = tuple(route)
+        """
+        List of indices of places in the order of visit in this state
+        """
 
         logger.info(f"Initialized TripState with route: {self.route}")
 
@@ -47,6 +44,14 @@ class TripState:
             self.all_places.features[index].properties["displayName"]
             for index in self.route
         )
+
+    def __eq__(self, other):
+        if not isinstance(other, TripState):
+            return False
+        return self.route == other.route
+
+    def __hash__(self):
+        return hash(self.route)
 
     @staticmethod
     def _init_route(
@@ -77,6 +82,25 @@ class TripState:
 
         return initial_route
 
+    @staticmethod
+    def _init_random_route(
+        all_places: FeatureCollection[Feature[Point, dict]],
+        number_of_nights: int,
+    ):
+        """
+        Initialize random route with accommodation placed on the beginning,
+        between places that many times as the number of nights and at the end of the route
+        """
+
+        initial_route = TripState._init_route(all_places, number_of_nights)
+
+        first = initial_route[0]
+        last = initial_route[-1]
+        middle = initial_route[1:-1]
+        shuffle(middle)
+
+        return [first] + middle + [last]
+
     @classmethod
     def initial_state(
         cls,
@@ -85,6 +109,15 @@ class TripState:
     ):
         initial_route = cls._init_route(all_places, number_of_nights)
         return cls(all_places, initial_route)
+
+    @classmethod
+    def random_state(
+        cls,
+        all_places: FeatureCollection[Feature[Point, dict]],
+        number_of_nights: int,
+    ):
+        random_route = cls._init_random_route(all_places, number_of_nights)
+        return cls(all_places, random_route)
 
     def ordered_places_with_times(
         self,

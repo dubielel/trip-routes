@@ -28,4 +28,4 @@ class FirstChoiceHillClimbing(HillClimbing):
                 )
                 return neighbour
 
-        return None
+        return self.current_state
