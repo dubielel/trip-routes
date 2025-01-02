@@ -18,7 +18,6 @@ type TripState = {
   dayStartTimestamp: number | null;
   dayEndTimestamp: number | null;
   placesToVisit: GeoJSON.FeatureCollection<GeoJSON.Point, PlaceToVisitProperties>;
-  routeCalculations: RouteCalculations;
 };
 
 const initialState: TripState = {
