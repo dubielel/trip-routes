@@ -4,7 +4,8 @@ WORKDIR /app
 
 COPY package.json .
 
-RUN npm install
+# --legacy-peer-deps is needed due to an incompatibility between the React 19 and mui-color-input
+RUN npm install --legacy-peer-deps
 
 COPY . .
 
