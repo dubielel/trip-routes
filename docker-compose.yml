@@ -8,9 +8,9 @@ services:
     volumes:
       - .db-data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_PORT=5432
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_PORT: 5432
 
   pgadmin:
     image: dpage/pgadmin4:latest
@@ -23,6 +23,23 @@ services:
       PGADMIN_DEFAULT_PASSWORD: admin
     depends_on:
       - pgrouting
+    profiles:
+      - pgadmin
+
+  backend:
+    build:
+      context: backend/
+    ports:
+      - "8000:8000"
+    environment:
+      ENV: prod
+      DATABASE_HOSTNAME: pgrouting
+      DATABASE_PORT: 5432
+      DATABASE_DATABASE: routing
+      DATABASE_USER: postgres
+      DATABASE_PASSWORD: postgres
+    depends_on:
+      - pgrouting
 
   frontend:
     build:
@@ -31,6 +48,8 @@ services:
       - "3000:3000"
     environment:
       NODE_ENV: production
+    depends_on:
+      - backend
 
 volumes:
   db-data:

@@ -1,4 +1,5 @@
 import logging
+import os
 
 import psycopg2 as pg
 from geojson_pydantic import Point, FeatureCollection, Feature, LineString
@@ -19,11 +20,11 @@ from models.PathPart import PathPart
 logger = logging.getLogger(__name__)
 
 
-DATABASE = "routing"
-HOST = "localhost"
-PORT = "5432"
-USER = "postgres"
-PASSWORD = "postgres"
+HOST = os.environ.get("DATABASE_HOSTNAME", "localhost")
+PORT = os.environ.get("DATABASE_PORT", "5432")
+DATABASE = os.environ.get("DATABASE_DATABASE", "routing")
+USER = os.environ.get("DATABASE_USER", "postgres")
+PASSWORD = os.environ.get("DATABASE_PASSWORD", "postgres")
 
 SRID = 4326
 
