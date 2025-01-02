@@ -22,7 +22,7 @@ class Solver:
 
         # TODO only timeout or should the solving end when algorithm is stuck in optimum?
         while not self._is_timeout():
-            logger.debug(f"Time elapsed: {self._time_elapsed()}")
+            logger.debug(f"Time elapsed: {self.algorithm.statistics.time_elapsed()}")
             next_state = self.algorithm.next_state()
 
             if next_state is None:
