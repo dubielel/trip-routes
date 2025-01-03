@@ -15,7 +15,7 @@ from geojson_pydantic import (
 )
 
 from pgrouting.PgRouting import PgRouting
-from models.PathPart import PathPart
+from pgrouting.PathPart import PathPart
 
 from utils.hex_color import get_hex_colors
 

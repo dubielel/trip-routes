@@ -14,8 +14,8 @@ import numpy.typing as npt
 from math import isclose
 from datetime import datetime
 
-from models.WayVertex import WayVertex
-from models.PathPart import PathPart
+from pgrouting.WayVertex import WayVertex
+from pgrouting.PathPart import PathPart
 
 logger = logging.getLogger(__name__)
 
