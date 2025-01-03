@@ -1,0 +1,203 @@
+@startuml Backend algorithms classes
+
+enum AvailableAlgorithms {
+  BEST_CHOICE_HILL_CLIMBING
+  FIRST_CHOICE_HILL_CLIMBING
+  RANDOM_CHOICE_HILL_CLIMBING
+  SIMULATED_ANNEALING
+  TABU_SEARCH
+
+  +{static} get_algorithm(algorithm: AvailableAlgorithms) : Algorithm
+}
+
+abstract class Algorithm {
+  +{static} LOCAL_OPTIMUM_MAX_STEPS : int
+  +{static} LOCAL_OPTIMUM_MAX_ESCAPES: int
+
+  +problem : TripProblem
+  +statistics : AlgorithmStatistics
+
+  +__init__(problem: TripProblem, statistics: AlgorithmStatistics)
+  +start()
+  +time_elapsed() : float
+  +stop()
+  +escape_local_optimum() : TripState | None
+  -_is_stuck_in_local_optimum() : bool
+  +{abstract} next_state() : TripState | None
+  -{abstract} _find_next_state() : TripState | None
+  -{abstract} _escape_local_optimum() : TripState
+}
+
+class AlgorithmStatistics {
+  +algorithm_name : str
+  +move_method_name : str
+  
+  +start_time : float | None
+  +end_time : float | None
+  +total_time : float
+
+  initial_state : TripState | None
+  initial_state_value : float | None
+
+  restart_states : dict[TripState, int]
+
+  solution_state : TripState | None
+  solution_state_value : float | None
+
+  explored_states : dict[TripState, int]
+  explored_states_count : int
+  distinct_explored_states_count : int
+
+  visited_states : dict[TripState, int]
+  visited_states_count : int
+  distinct_visited_states_count : int
+
+  local_optimum_escapes : int
+
+  worsening_moves : int
+
+  states: dict[TripState, float]
+
+  visited_states_list : list[tuple[TripState.route, float | None, float, float]]
+  best_states_list : list[tuple[TripState.route, float | None, float]]
+
+  +__init__(algorithm_name: str, move_method_name: str)
+  +on_start(initial_state: TripState, value: float)
+  +on_next_state(state: TripState, value: float)
+  +on_worse_next_state()
+  +on_next_neighbour(state: TripState, value: float)
+  +on_local_optimum_escape(next_state: TripState, value: float)
+  +on_solution(solution_state: TripState, value: float)
+  +time_elapsed() : float
+  -_start_timer()
+  -_stop_timer()
+  +to_dict() : dict
+}
+
+class Solver {
+  +{static} MAX_TIME: int
+
+  +problem : TripProblem
+  +algorithm : Algorithm
+
+  +__init__(problem: TripProblem, algorithm: Algorithm)
+  +solve() : TripState
+  -_is_timeout() : bool
+}
+
+enum GoalType {
+  MINIMIZE = -1
+  MAXIMIZE = 1
+}
+
+class TripGoal {
+  +time_matrix : npt.NDArray[np.float64]
+  +max_seconds_per_day : int
+
+  +{static} goal_type() : GoalType
+  +__init__(time_matrix: npt.NDArray[np.float64], max_seconds_per_day: int)
+  +evaluate(state: TripState) : float
+  +is_state_valid(state: TripState) : bool
+}
+
+class TripProblem {
+  +trip_params : CalculateTripRequestBody
+  +all_places : FeatureCollection[Feature[Point, dict]]
+  +number_of_nights : int
+  +max_seconds_per_day : int
+  +time_matrix : npt.NDArray[np.float64]
+
+  +goal_evaluator : TripGoal
+  +move_method : Move
+
+  +initial_state : TripState
+
+  +__init__(trip_params: CalculateTripRequestBody, move_method: Move)
+  +compare_states(current_state: TripState, next_state: TripState) : float
+  +evaluate(state: TripState) : float
+  +process_solution(state: TripState) : dict
+  +random_state() : TripState
+  +random_valid_state() : TripState
+  -_initial_state() : TripState
+  -_calculate_time_matrix() : npt.NDArray[np.float64]
+}
+
+class TripState {
+  +all_places : FeatureCollection[Feature[Point, dict]]
+  +route : touple[int, ...]
+
+  +__init__(all_places: Type[all_places], route: touple[int, ...])
+  +__str__() : str
+  +__eq__(other: Any) : bool
+  +__hash__() : int
+
+  -{static} _init_route(all_places: Type[all_places], number_of_nights: int) : touple[int, ...]
+  -{static} _init_random_route(all_places: Type[all_places], number_of_nights: int) : touple[int, ...]
+  +{static} initial_state(all_places: Type[all_places], number_of_nights: int) : TripState
+  +{static} random_state(all_places: Type[all_places], number_of_nights: int) : TripState
+  +ordered_places_with_times(time_matrix: npt.NDArray[np.float64], first_day_timestamp: int, last_day_timestamp: int) : list[Type[all_places]]
+  +path_multiline_string_by_days(): Feature[MultiLineString, dict]
+  -_divide_route_into_days() : list[list[int]]
+}
+note right of TripState::all_places
+  Type alias:
+  Type[all_places] = FeatureCollection[Feature[Point, dict]]
+end note
+
+enum AvailableMoves {
+  SWAP_TWO_POINTS
+  TWO_OPT
+
+  +{static} get_move(move: AvailableMoves) : Move
+}
+
+abstract class Move {
+  +{abstract} apply() : TripState
+  +{abstract} _is_valid() : bool
+}
+
+class SwapTwoPoints {
+  +state : TripState
+  +index1 : int
+  +index2 : int
+
+  +__init__(state: TripState, index1: int, index2: int)
+  +apply() : TripState
+  +_is_valid() : bool
+}
+
+class TwoOpt {
+  +state : TripState
+  +index1 : int
+  +index2 : int
+
+  +__init__(state: TripState, index1: int, index2: int)
+  +apply() : TripState
+  +_is_valid() : bool
+}
+
+TwoOpt -up-|> Move
+SwapTwoPoints -up-|> Move
+
+Solver::problem o-- TripProblem
+Solver::algorithm o-- Algorithm
+
+GoalType <-right- TripGoal::goal_type
+
+TripProblem::goal_evaluator o-left- TripGoal
+
+
+TripProblem::move_method o-left- Move
+TripProblem --> TripState
+
+Algorithm::problem -left-> TripProblem
+Algorithm::statistics o-right- AlgorithmStatistics
+Algorithm --> TripState
+
+AvailableAlgorithms::get_algorithm -down-> Algorithm
+AvailableMoves::get_move -right-> Move
+
+' Just for positioning
+TripGoal -[hidden]- Move
+
+@enduml

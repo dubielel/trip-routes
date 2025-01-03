@@ -1,0 +1,34 @@
+@startuml Build database & prepare data
+
+start
+
+: Use postgres Docker image;
+
+: Install PostGIS extension;
+
+: Install pgRouting extension, 
+  osm2pgrouting & osmctools;
+note right
+    //osm2pgrouting// is a tool to import 
+    OpenStreetMap data into a pgRouting database.
+
+    //osmctools// is a set of tools to work 
+    with OpenStreetMap data.
+end note
+
+repeat : Prepare OpenStreetMap data \n for all specified regions;
+
+    : Download OpenStreetMap region file from Geofabrik;
+
+    : Convert from //.osm.pbf// to //.o5m// file;
+
+    : Filter data to include only vehicle routes;
+
+    : Convert from //.o5m// to //.osm// file;
+
+repeat while (More regions?) is (yes)
+-> no;
+
+stop
+
+@enduml

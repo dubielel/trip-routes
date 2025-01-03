@@ -1,0 +1,47 @@
+@startuml Backend pgrouting module classes
+
+package package_algorithms as "Algorithms" {
+
+  class TripProblem {}
+  hide TripProblem members
+
+  class TripState {}
+  hide TripState members
+
+  TripProblem --> TripState
+
+}
+
+package package_pgrouting as "pgRouting" {
+  class PgRouting {
+    +conn : DatabaseConnection
+    +cursor : DatabaseCursor
+
+    +__init__()
+    +get_time_matrix(places: FeatureCollection[Feature[Point, dict]]) : npt.NDArray[np.float64]
+    +get_linestring_path(start: Point, end: Point) : LineString | None
+    -_get_nearest_way_vertex(point: Point) : WayVertex
+  }
+
+  struct WayVertex {
+    +id: int
+    +osm_id: int
+    +eout: int
+    +lon: float
+    +lat: float
+    +cnt: int
+    +chk: int
+    +ein: int
+    +the_geom: Point
+
+    +{static} from_pgr(**kwargs) : WayVertex
+    +__str__() : str
+  }
+
+  PgRouting --> WayVertex
+}
+
+TripProblem o-right- PgRouting::get_time_matrix
+TripState o-right- PgRouting::get_linestring_path
+
+@enduml

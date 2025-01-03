@@ -1,0 +1,19 @@
+@startuml Initialize database with data
+
+start
+
+: Create //routing// database;
+
+repeat : For all region data files;
+
+: Import OpenStreetMap data
+  using //osm2pgrouting//;
+
+: Remove imported file;
+
+repeat while (More files?) is (yes)
+-> no;
+
+stop
+
+@enduml

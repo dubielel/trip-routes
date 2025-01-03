@@ -1,0 +1,58 @@
+@startuml Data import flow
+
+start
+
+group Build database
+
+  : Use postgres Docker image;
+
+  : Install PostGIS extension;
+
+  : Install pgRouting extension, 
+    osm2pgrouting & osmctools;
+  note right
+    //osm2pgrouting// is a tool to import 
+    OpenStreetMap data into a pgRouting database.
+
+    //osmctools// is a set of tools to work 
+    with OpenStreetMap data.
+  end note
+
+end group
+
+group Prepare data
+
+  repeat : Prepare OpenStreetMap data \n for all specified regions;
+
+    : Download OpenStreetMap region file from Geofabrik;
+
+    : Convert from //.osm.pbf// to //.o5m// file;
+
+    : Filter data to include only vehicle routes;
+
+    : Convert from //.o5m// to //.osm// file;
+
+  repeat while (More regions?) is (yes)
+  -> no;
+
+end group
+
+group Initialize database with data
+
+  : Create //routing// database;
+
+  repeat : For all region data files;
+
+  : Import OpenStreetMap data
+    using //osm2pgrouting//;
+
+  : Remove imported file;
+
+  repeat while (More files?) is (yes)
+  -> no;
+
+end group
+
+stop
+
+@enduml

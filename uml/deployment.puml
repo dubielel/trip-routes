@@ -1,0 +1,52 @@
+@startuml Deployment Diagram
+
+node host as "Server host" {
+  database pgrouting [
+    **Data representation**
+
+    ===
+    PostgreSQL
+    ---
+    PostGIS
+    ---
+    pgRouting
+  ]
+
+  component backend [
+    **Computations engine &**
+    **API service**
+
+    ===
+    Python
+    ---
+    FastAPI
+  ]
+
+
+  node webserver [
+    **Web server**
+
+    ===
+    Nginx
+  ]
+}
+
+node client as "Client host" {
+  component frontend [
+    **User interface**
+
+    ===
+
+    TypeScript
+    ---
+    React
+  ]
+}
+
+backend -up-> pgrouting : "Fetch data"
+
+backend <-right-> webserver : "API requests"
+
+webserver -right-> frontend : "Serve"
+
+@enduml

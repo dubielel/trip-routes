@@ -1,0 +1,13 @@
+@startuml Data import flow
+
+start
+
+: Build database;
+
+: Prepare data;
+
+: Initialize database with data;
+
+stop
+
+@enduml

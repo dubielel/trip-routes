@@ -1,0 +1,47 @@
+@startuml Backend move classes
+
+enum AvailableMoves {
+  SWAP_TWO_POINTS
+  TWO_OPT
+
+  +{static} get_move(move: AvailableMoves) : Move
+}
+
+abstract class Move {
+  +{abstract} apply() : TripState
+  +{abstract} _is_valid() : bool
+}
+
+class SwapTwoPoints {
+  +state : TripState
+  +index1 : int
+  +index2 : int
+
+  +__init__(state: TripState, index1: int, index2: int)
+  +apply() : TripState
+  +_is_valid() : bool
+}
+
+class TwoOpt {
+  +state : TripState
+  +index1 : int
+  +index2 : int
+
+  +__init__(state: TripState, index1: int, index2: int)
+  +apply() : TripState
+  +_is_valid() : bool
+}
+
+' Inheritance
+TwoOpt -up-|> Move
+SwapTwoPoints -up-|> Move
+
+' TripProblem aggregation
+class TripProblem {}
+hide TripProblem members
+TripProblem o-left- Move
+
+' Association
+AvailableMoves::get_move -right-> Move
+
+@enduml

@@ -1,0 +1,72 @@
+@startuml Backend algorithms classes
+
+hide members
+
+enum AvailableAlgorithms {}
+
+abstract class Algorithm {}
+
+abstract class HillClimbing {}
+
+class BestChoiceHillClimbing {}
+
+class FirstChoiceHillClimbing {}
+
+class RandomChoiceHillClimbing {}
+
+class TabuSearch {}
+
+class SimulatedAnnealing {}
+
+class AlgorithmStatistics {}
+
+class Solver {}
+
+enum GoalType {}
+
+class TripGoal {}
+
+class TripProblem {}
+
+class TripState {}
+
+enum AvailableMoves {}
+
+abstract class Move {}
+
+class SwapTwoPoints {}
+
+class TwoOpt {}
+
+TwoOpt -up-|> Move
+SwapTwoPoints -up-|> Move
+
+Solver o-- TripProblem
+Solver o-- Algorithm
+
+GoalType <-right- TripGoal
+
+TripProblem o-left- TripGoal
+
+TripProblem o-left- Move
+TripProblem --> TripState
+
+Algorithm -left-> TripProblem
+Algorithm o-right- AlgorithmStatistics
+Algorithm --> TripState
+
+HillClimbing -up-|> Algorithm
+TabuSearch -up-|> Algorithm
+SimulatedAnnealing -up-|> Algorithm
+
+BestChoiceHillClimbing -up-|> HillClimbing
+FirstChoiceHillClimbing -up-|> HillClimbing
+RandomChoiceHillClimbing -up-|> HillClimbing
+
+AvailableAlgorithms -down-> Algorithm
+AvailableMoves -right-> Move
+
+' Just for positioning
+TripGoal -[hidden]- Move
+
+@enduml

@@ -1,3 +1,6 @@
+# Exported UML diagrams
+uml/exported/
+
 # Backend logs
 backend/logs/
 

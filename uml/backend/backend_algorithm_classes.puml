@@ -1,0 +1,146 @@
+@startuml Backend algorithm classes
+
+enum AvailableAlgorithms {
+  BEST_CHOICE_HILL_CLIMBING
+  FIRST_CHOICE_HILL_CLIMBING
+  RANDOM_CHOICE_HILL_CLIMBING
+  SIMULATED_ANNEALING
+  TABU_SEARCH
+
+  +{static} get_algorithm(algorithm: AvailableAlgorithms) : Algorithm
+}
+
+abstract class Algorithm {
+  +{static} LOCAL_OPTIMUM_MAX_STEPS : int
+  +{static} LOCAL_OPTIMUM_MAX_ESCAPES: int
+
+  +problem : TripProblem
+  +statistics : AlgorithmStatistics
+
+  +__init__(problem: TripProblem, statistics: AlgorithmStatistics)
+  +start()
+  +time_elapsed() : float
+  +stop()
+  +escape_local_optimum() : TripState | None
+  -_get_available_states() : list[TripState]
+  -_is_stuck_in_local_optimum() : bool
+  +{abstract} next_state() : TripState | None
+  -{abstract} _find_next_state() : TripState | None
+  -{abstract} _update_state(new_state: TripState)
+  -{abstract} _escape_local_optimum() : TripState
+}
+
+abstract class HillClimbing {
+  +__init__(problem: TripProblem, statistics: AlgorithmStatistics)
+  +next_state() : TripState | None
+  -_update_state(new_state: TripState)
+  -_escape_local_optimum() : TripState
+  -_random_restart() : TripState
+  -{abstract} _find_next_state() : TripState | None
+}
+
+class BestChoiceHillClimbing {
+  +_find_next_state() : TripState | None
+}
+
+class FirstChoiceHillClimbing {
+  +_find_next_state() : TripState | None
+}
+
+class RandomChoiceHillClimbing {
+  +_find_next_state() : TripState | None
+}
+
+class TabuSearch {
+  +{static} MAX_TABU_LIST_SIZE : int
+  +tabu_list: list[TripState]
+
+  +__init__(problem: TripProblem, statistics: AlgorithmStatistics)
+  +next_state() : TripState | None
+  -_find_next_state() : TripState | None
+  -_update_state(new_state: TripState)
+  -_escape_local_optimum() : TripState
+  -_random_restart() : TripState
+}
+
+class SimulatedAnnealing {
+  +{static} LOCAL_OPTIMUM_MAX_ESCAPES : int
+  +{static} INITIAL_TEMPERATURE : int
+  +{static} COOLING_SCHEDULE : float
+  +{static} REHEAT_RATIO : float
+  +{static} MIN_TEMPERATURE : int
+  +temperature : float
+
+  +__init__(problem: TripProblem, statistics: AlgorithmStatistics)
+  +next_state() : TripState | None
+  -_find_next_state() : TripState | None
+  -_update_state(new_state: TripState)
+  -_calculate_update_probability(new_state: TripState) : float
+  -_update_temperature()
+  -_escape_local_optimum() : TripState
+  -_random_restart_and_reheat() : TripState
+}
+
+class AlgorithmStatistics {
+  +algorithm_name : str
+  +move_method_name : str
+  +start_time : float | None
+  +end_time : float | None
+  +total_time : float
+  +initial_state : TripState | None
+  +initial_state_value : float | None
+  +restart_states : dict[TripState, int]
+  +solution_state : TripState | None
+  +solution_state_value : float | None
+  +explored_states : dict[TripState, int]
+  +explored_states_count : int
+  +distinct_explored_states_count : int
+  +visited_states : dict[TripState, int]
+  +visited_states_count : int
+  +distinct_visited_states_count : int
+  +local_optimum_escapes : int
+  +worsening_moves : int
+  +states: dict[TripState, float]
+  +visited_states_list : list[tuple[TripState.route, float | None, float, float]]
+  +best_states_list : list[tuple[TripState.route, float | None, float]]
+
+  +__init__(algorithm_name: str, move_method_name: str)
+  +on_start(initial_state: TripState, value: float)
+  +on_next_state(state: TripState, value: float)
+  +on_worse_next_state()
+  +on_next_neighbour(state: TripState, value: float)
+  +on_local_optimum_escape(next_state: TripState, value: float)
+  +on_solution(solution_state: TripState, value: float)
+  +time_elapsed() : float
+  -_start_timer()
+  -_stop_timer()
+  +to_dict() : dict
+}
+
+class Solver {}
+hide Solver members
+class TripProblem {}
+hide TripProblem members
+class TripState {}
+hide TripState members
+
+Solver o- TripProblem
+TripProblem -left-> TripState
+
+Algorithm::problem -up-> TripProblem
+Algorithm::statistics o-left- AlgorithmStatistics
+
+Algorithm -up-> TripState
+Algorithm -up-o Solver
+
+HillClimbing -up-|> Algorithm
+TabuSearch -up-|> Algorithm
+SimulatedAnnealing -up-|> Algorithm
+
+BestChoiceHillClimbing -up-|> HillClimbing
+FirstChoiceHillClimbing -up-|> HillClimbing
+RandomChoiceHillClimbing -up-|> HillClimbing
+
+AvailableAlgorithms::get_algorithm -left-> Algorithm
+
+@enduml

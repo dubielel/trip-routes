@@ -1,0 +1,108 @@
+@startuml Backend algorithms module classes
+
+package "Algorithms" {
+
+  package "Algorithm" {
+    abstract class abstract_algorithm as "Algorithm" {}
+    hide abstract_algorithm members
+  }
+
+  class Solver {
+    +{static} MAX_TIME: int
+
+    +problem : TripProblem
+    +algorithm : Algorithm
+
+    +__init__(problem: TripProblem, algorithm: Algorithm)
+    +solve() : TripState
+    -_is_timeout() : bool
+  }
+
+  package "State evaluator" {
+    enum GoalType {
+      MINIMIZE = -1
+      MAXIMIZE = 1
+    }
+
+    class TripGoal {
+      +time_matrix : npt.NDArray[np.float64]
+      +max_seconds_per_day : int
+
+      +{static} goal_type() : GoalType
+      +__init__(time_matrix: npt.NDArray[np.float64], max_seconds_per_day: int)
+      +evaluate(state: TripState) : float
+      +is_state_valid(state: TripState) : bool
+    }
+  }
+
+  class TripProblem {
+    +trip_params : CalculateTripRequestBody
+    +all_places : FeatureCollection[Feature[Point, dict]]
+    +number_of_nights : int
+    +max_seconds_per_day : int
+    +time_matrix : npt.NDArray[np.float64]
+
+    +goal_evaluator : TripGoal
+    +move_method : Move
+
+    +initial_state : TripState
+
+    +__init__(trip_params: CalculateTripRequestBody, move_method: Move)
+    +compare_states(current_state: TripState, next_state: TripState) : float
+    +evaluate(state: TripState) : float
+    +process_solution(state: TripState) : dict
+    +random_state() : TripState
+    +random_valid_state() : TripState
+    -_initial_state() : TripState
+    -_calculate_time_matrix() : npt.NDArray[np.float64]
+  }
+
+  class TripState {
+    +all_places : FeatureCollection[Feature[Point, dict]]
+    +route : touple[int, ...]
+
+    +__init__(all_places: Type[all_places], route: touple[int, ...])
+    +__str__() : str
+    +__eq__(other: Any) : bool
+    +__hash__() : int
+
+    +{static} initial_state(all_places: Type[all_places], number_of_nights: int) : TripState
+    +{static} random_state(all_places: Type[all_places], number_of_nights: int) : TripState
+    -{static} _init_route(all_places: Type[all_places], number_of_nights: int) : touple[int, ...]
+    -{static} _init_random_route(all_places: Type[all_places], number_of_nights: int) : touple[int, ...]
+    +ordered_places_with_times(time_matrix: npt.NDArray[np.float64], first_day_timestamp: int, last_day_timestamp: int) : list[Type[all_places]]
+    +path_multiline_string_by_days(): Feature[MultiLineString, dict]
+    -_divide_route_into_days() : list[list[int]]
+  }
+  note top of TripState
+    Type alias //(to shorten the description)//:
+    <code>
+    Type[all_places] = FeatureCollection[Feature[Point, dict]]
+    </code>
+  end note
+
+  package "Move method" {
+    abstract class Move {}
+    hide Move members
+  }
+
+  Solver::problem o-- TripProblem
+  Solver::algorithm o-right- abstract_algorithm
+
+  GoalType <-right- TripGoal::goal_type
+
+  TripProblem::goal_evaluator o-up- TripGoal
+
+
+  TripProblem::move_method o-right- Move
+  TripProblem --> TripState
+
+  abstract_algorithm --> TripProblem
+  abstract_algorithm --> TripState
+
+  ' Just for positioning
+  TripGoal -[hidden]- Move
+
+}
+
+@enduml

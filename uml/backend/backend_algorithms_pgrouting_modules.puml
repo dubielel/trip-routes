@@ -1,0 +1,39 @@
+@startuml Backend algorithms & pgrouting modules
+
+package algorithms_module as "Algorithms" {
+
+  component algorithm as "Algorithm"
+
+  component move as "Move method"
+
+  component problem as "Problem"
+
+  component statistics as "Algorithm Statistics"
+
+  component solver as "Solver"
+
+  component goal as "State evaluator"
+
+  component state as "State"
+
+  problem .right.> goal : "Evaluate state using"
+  problem .left.> move : "Generate moves"
+  problem .down.> state : "Process"
+
+  algorithm .up.> problem : "Solve"
+  algorithm .right.> state : "Contain"
+  algorithm .left.> statistics : "Delegate statistics"
+
+  solver .down.> algorithm : "Use for solving"
+  solver .up.> problem : "Contain"
+
+}
+
+package pgrouting_package as "pgRouting" {
+  component pgrouting as "pgRouting"
+}
+
+problem .right.> pgrouting : "Fetch data"
+state .right.> pgrouting : "Fetch data"
+
+@enduml
