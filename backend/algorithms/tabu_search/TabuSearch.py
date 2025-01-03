@@ -13,14 +13,13 @@ class TabuSearch(Algorithm):
     MAX_TABU_LIST_SIZE = (
         500  # TODO find a good value for this or implement a dynamic tabu list size
     )
-    tabu_list: list[TripState]
 
     def __init__(
         self,
         problem: TripProblem,
         algorithm_statistics: AlgorithmStatistics,
     ):
-        self.tabu_list = []
+        self.tabu_list: list[TripState] = []
 
         super().__init__(problem, algorithm_statistics)
 
