@@ -36,7 +36,7 @@ class HillClimbing(Algorithm, ABC):
             logger.debug(("next_state()" f"  - Next state route: {next_state.route}"))
             self._update_state(next_state)
         else:
-            self.statistics.on_solution(self.best_state, self.best_objective_value)
+            self.stop()
 
         return next_state
 

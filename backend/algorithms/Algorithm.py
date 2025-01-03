@@ -24,6 +24,12 @@ class Algorithm(ABC):
             self.current_state, self.problem.evaluate(self.current_state)
         )
 
+    def time_elapsed(self) -> float:
+        return self.statistics.time_elapsed()
+
+    def stop(self):
+        self.statistics.on_solution(self.best_state, self.best_objective_value)
+
     @abstractmethod
     def next_state(self) -> TripState | None:
         """

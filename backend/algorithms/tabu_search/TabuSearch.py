@@ -42,7 +42,7 @@ class TabuSearch(Algorithm):
             if len(self.tabu_list) > self.MAX_TABU_LIST_SIZE:
                 self.tabu_list.pop(0)
         else:
-            self.statistics.on_solution(self.best_state, self.best_objective_value)
+            self.stop()
 
         return next_state
 

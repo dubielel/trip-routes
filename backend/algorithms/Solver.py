@@ -22,7 +22,7 @@ class Solver:
 
         # TODO only timeout or should the solving end when algorithm is stuck in optimum?
         while not self._is_timeout():
-            logger.debug(f"Time elapsed: {self.algorithm.statistics.time_elapsed()}")
+            logger.debug(f"Time elapsed: {self.algorithm.time_elapsed()}")
             next_state = self.algorithm.next_state()
 
             if next_state is None:
@@ -37,13 +37,11 @@ class Solver:
 
         else:
             logger.debug("Timeout - algorithm interrupted")
+            self.algorithm.stop()
             solution_state = self.algorithm.best_state
-            self.algorithm.statistics.on_solution(
-                solution_state, self.problem.evaluate(solution_state)
-            )
 
         logger.debug(f"Solving ends - solution state: {solution_state.route}")
         return solution_state
 
     def _is_timeout(self) -> bool:
-        return self.algorithm.statistics.time_elapsed() > self.MAX_TIME
+        return self.algorithm.time_elapsed() > self.MAX_TIME

@@ -44,7 +44,7 @@ class SimulatedAnnealing(Algorithm):
         if next_state is not None:
             self._update_state(next_state)
         else:
-            self.statistics.on_solution(self.best_state, self.best_objective_value)
+            self.stop()
 
         self._update_temperature()
 
