@@ -2,57 +2,64 @@
 
 left to right direction
 
-component models as "Models"
+package "API service" {
 
-interface availableParametersResponse as "Available parameters response"
-interface calculateTripRequestBody as "Calculate trip request body"
-interface calculateTripResponse as "Calculate trip response"
+  component models as "Models"
 
-models -- availableParametersResponse
-models -- calculateTripRequestBody
-models -- calculateTripResponse
+  interface availableParametersResponse as "Available parameters response"
+  interface calculateTripRequestBody as "Calculate trip request body"
+  interface calculateTripResponse as "Calculate trip response"
 
-component api as "API"
+  models -- availableParametersResponse
+  models -- calculateTripRequestBody
+  models -- calculateTripResponse
 
-api -up-( calculateTripResponse
-api -up-( calculateTripRequestBody
-api -up-( availableParametersResponse
+  component api as "API"
 
-component algorithms as "Algorithms" {
-
-  component algorithm as "Algorithm"
-
-  component move as "Move method"
-
-  component problem as "Problem"
-
-  component statistics as "Algorithm Statistics"
-
-  component solver as "Solver"
-
-  component goal as "State evaluator"
-
-  component state as "State"
-
-  problem .down.> goal : "Evaluate state using"
-  problem .up.> move : "Generate moves"
-  problem .right.> state : "Process"
-
-  algorithm .left.> problem : "Solve"
-  algorithm .down.> state : "Contain"
-  algorithm .up.> statistics : "Delegate statistics"
-
-  solver .right.> algorithm : "Use for solving"
-  solver .left.> problem : "Contain"
+  api -up-( calculateTripResponse
+  api -up-( calculateTripRequestBody
+  api -up-( availableParametersResponse
 
 }
 
-component pgrouting as "pgRouting"
+package "Computations engine" {
+
+  component algorithms as "Algorithms" {
+
+    component algorithm as "Algorithm"
+
+    component move as "Move method"
+
+    component problem as "Problem"
+
+    component statistics as "Algorithm Statistics"
+
+    component solver as "Solver"
+
+    component goal as "State evaluator"
+
+    component state as "State"
+
+    problem .down.> goal : "Evaluate state using"
+    problem .up.> move : "Generate moves"
+    problem .right.> state : "Process"
+
+    algorithm .left.> problem : "Solve"
+    algorithm .down.> state : "Contain"
+    algorithm .up.> statistics : "Delegate statistics"
+
+    solver .right.> algorithm : "Use for solving"
+    solver .left.> problem : "Contain"
+
+  }
+
+  component pgrouting as "pgRouting"
 
 
-problem ..> pgrouting : "Fetch data"
-state ..> pgrouting : "Fetch data"
+  problem ..> pgrouting : "Fetch data"
+  state ..> pgrouting : "Fetch data"
 
+}
 
 api ..> algorithms : Use
 
