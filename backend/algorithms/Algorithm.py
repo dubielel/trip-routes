@@ -30,6 +30,31 @@ class Algorithm(ABC):
     def stop(self):
         self.statistics.on_solution(self.best_state, self.best_objective_value)
 
+    def escape_local_optimum(self) -> TripState | None:
+        if self.statistics.local_optimum_escapes >= self.LOCAL_OPTIMUM_MAX_ESCAPES:
+            return None
+
+        state = self._escape_local_optimum()
+        self.statistics.on_local_optimum_escape(state, self.problem.evaluate(state))
+        return state
+
+    def _get_available_states(self):
+        states: list[TripState] = []
+        for index1 in range(1, len(self.current_state.route) - 2):
+            for index2 in range(index1 + 1, len(self.current_state.route) - 1):
+                neighbour = self.problem.move_method(
+                    self.current_state, index1, index2
+                ).apply()
+                self.statistics.on_next_neighbour(
+                    neighbour, self.problem.evaluate(neighbour)
+                )
+                states.append(neighbour)
+
+        return states
+
+    def _is_stuck_in_local_optimum(self) -> bool:
+        return self.steps_from_last_step_update >= self.LOCAL_OPTIMUM_MAX_STEPS
+
     @abstractmethod
     def next_state(self) -> TripState | None:
         """
@@ -44,17 +69,10 @@ class Algorithm(ABC):
         """
         pass
 
-    def escape_local_optimum(self) -> TripState | None:
-        if self.statistics.local_optimum_escapes >= self.LOCAL_OPTIMUM_MAX_ESCAPES:
-            return None
-
-        state = self._escape_local_optimum()
-        self.statistics.on_local_optimum_escape(state, self.problem.evaluate(state))
-        return state
+    @abstractmethod
+    def _update_state(self, new_state: TripState):
+        pass
 
     @abstractmethod
     def _escape_local_optimum(self) -> TripState:
         pass
-
-    def _is_stuck_in_local_optimum(self) -> bool:
-        return self.steps_from_last_step_update >= self.LOCAL_OPTIMUM_MAX_STEPS

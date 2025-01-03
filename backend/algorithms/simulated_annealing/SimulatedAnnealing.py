@@ -56,20 +56,6 @@ class SimulatedAnnealing(Algorithm):
         """
         return choice(self._get_available_states())
 
-    def _get_available_states(self):
-        states: list[TripState] = []
-        for index1 in range(1, len(self.current_state.route) - 2):
-            for index2 in range(index1 + 1, len(self.current_state.route) - 1):
-                neighbour = self.problem.move_method(
-                    self.current_state, index1, index2
-                ).apply()
-                self.statistics.on_next_neighbour(
-                    neighbour, self.problem.evaluate(neighbour)
-                )
-                states.append(neighbour)
-
-        return states
-
     def _update_state(self, new_state: TripState):
         self.statistics.on_next_state(new_state, self.problem.evaluate(new_state))
         if random() <= self._calculate_update_probability(new_state):

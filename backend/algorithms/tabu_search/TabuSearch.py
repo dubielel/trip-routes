@@ -65,22 +65,6 @@ class TabuSearch(Algorithm):
 
         return best_candidate or self.current_state
 
-    def _get_available_states(self):
-        states: list[TripState] = []
-        for index1 in range(1, len(self.current_state.route) - 2):
-            for index2 in range(index1 + 1, len(self.current_state.route) - 1):
-                neighbour = self.problem.move_method(
-                    self.current_state, index1, index2
-                ).apply()
-                self.statistics.on_next_neighbour(
-                    neighbour, self.problem.evaluate(neighbour)
-                )
-                states.append(neighbour)
-
-        logger.debug(("_get_available_states()" f"  - Available states: {states}"))
-
-        return states
-
     def _update_state(self, new_state: TripState):
         logger.debug(
             (

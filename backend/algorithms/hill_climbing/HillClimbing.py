@@ -40,28 +40,6 @@ class HillClimbing(Algorithm, ABC):
 
         return next_state
 
-    @abstractmethod
-    def _find_next_state(self) -> TripState | None:
-        """
-        Find the next state based on the current state
-        """
-
-    def _get_available_states(self):
-        states: list[TripState] = []
-        for index1 in range(1, len(self.current_state.route) - 2):
-            for index2 in range(index1 + 1, len(self.current_state.route) - 1):
-                neighbour = self.problem.move_method(
-                    self.current_state, index1, index2
-                ).apply()
-                self.statistics.on_next_neighbour(
-                    neighbour, self.problem.evaluate(neighbour)
-                )
-                states.append(neighbour)
-
-        logger.debug(("_get_available_states()" f"  - Available states: {states}"))
-
-        return states
-
     def _update_state(self, new_state: TripState):
         logger.debug(
             (
@@ -89,3 +67,9 @@ class HillClimbing(Algorithm, ABC):
 
     def _random_restart(self) -> TripState:
         return self.problem.random_valid_state()
+
+    @abstractmethod
+    def _find_next_state(self) -> TripState | None:
+        """
+        Find the next state based on the current state
+        """
